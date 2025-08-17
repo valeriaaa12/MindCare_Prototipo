@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import NavBar from "./components/NavBar";
 import './styles/expert.css';
+import './styles/resources.css';
 import Chatbot from "./Chatbot";    
 import Footer from "./components/Footer";
 import Cita from "./cita";

@@ -1,0 +1,89 @@
+:root { --mc-purple:#5a2ea6; }
+.text-mc { color: var(--mc-purple)!important; }
+.btn-mc { background:var(--mc-purple); color:#fff; border:none; }
+.btn-mc:hover { background:#4b1f8f; color:#fff; }
+
+/* Fondo suave de la sección */
+.resources-section{ background:#f8f6fc; }
+
+/* ——— Card base ——— */
+.res-card{
+  --rc-min-h: 240px;                
+  background:#fff;
+  border-radius:22px;
+  box-shadow:0 16px 40px rgba(90,46,166,.12);
+  padding:1.25rem 1.5rem;
+  width:500px; max-width:100%;
+  min-height:var(--rc-min-h);
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+/* centra todas las tarjetas y dales el mismo ancho máx */
+.resources-section .res-card{
+  max-width: 960px;        /* ajusta a tu gusto: 880–1040px */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.res-cards-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem; /* Espacio entre cards, ajusta si lo deseas */
+}
+
+/* Rejilla izquierda-derecha */
+.res-row{
+  display:grid;
+  grid-template-columns: 140px 1fr; 
+  gap:1.25rem;
+  align-items:center;
+}
+
+
+.res-thumb{
+  width:140px; height:180px;
+  border-radius:28px;
+  background:var(--mc-purple);
+  display:grid; place-items:center;
+  overflow:hidden;
+}
+.res-thumb img{
+  width:75%; height:75%; object-fit:contain;
+}
+.res-video-thumb iframe{
+  position: relative;
+  height: 100%;
+  width: 177.78%;                /* 16/9 = 1.7778 → llena alto del cuadrado */
+              /* centra el recorte horizontal */
+  border: 0;
+  
+}
+
+.res-video-thumb{
+  aspect-ratio: 1 / 1;          /* cuadrado */
+  width: 260px;                  /* tamaño base (ajústalo) */
+  max-width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 12px 30px rgba(90,46,166,.18);
+  margin: 0 auto;                /* centrado; quítalo si lo quieres a la izquierda */
+}
+/* Texto */
+.res-title{ color:var(--mc-purple); font-weight:800; font-size:clamp(1.1rem,1.1vw+1rem,1.5rem); }
+.res-author{ color:#6b5aa6; }
+.res-desc{ color:#3f2a84; line-height:1.7; margin:0; }
+
+
+
+/* ——— Responsive ——— */
+@media (max-width: 576px){
+  .res-card{ min-height:auto; }
+  .res-row{ grid-template-columns: 1fr; align-items:flex-start; }
+  .res-thumb{ width:100px; height:100px; border-radius:22px; }
+  .res-video-box--compact iframe{ height:200px; } /* un poco más alto en móvil */
+}

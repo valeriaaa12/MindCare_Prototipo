@@ -12,7 +12,6 @@ export default function Hero() {
                 <h1 className="display-6 fw-bold mb-3 text-mindcare" >¿Qué es MindCare?</h1>
                 <p
                   className="lead lh-base text-justify text-mindcare"
-       
                 >
                   MindCare es una innovadora aplicación diseñada para brindar apoyo psicológico de
                   manera accesible y personalizada. A través de un chatbot impulsado por inteligencia

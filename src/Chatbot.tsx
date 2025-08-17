@@ -34,12 +34,12 @@ export default function ChatBot() {
   setLoading(true);
 
   try {
-    const payload = [...messages, userMsg].map(m => ({ role: m.role, content: m.content }));
+   // const payload = [...messages, userMsg].map(m => ({ role: m.role, content: m.content }));
 
-    const res = await fetch("/api/chat", {
+  const res = await fetch("/api/chat", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ messages: payload }), // incluye el userMsg!
+  body: JSON.stringify({ prompt: text }), // en lugar de { messages: payload }
 });
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);

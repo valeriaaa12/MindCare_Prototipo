@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import NavBar from "./components/NavBar";
 
+import Hero from "./components/Hero";
 import Chatbot from "./Chatbot";      // <- está en src/Chatbot.tsx
-import Footer from "./components/Footer";
 
-import Home from "./home";
+import Carrusel from "./components/carrusel";
 type View = "home" | "chatbot";
 
 function getViewFromHash(): View {
@@ -23,13 +22,14 @@ export default function App() {
 
   return (
     <div className="app-shell bg-soft">
-      <NavBar current={view} />
+ 
       <div className="app-main">
-        {view === "home" && <Home />}
+        {view === "home" && <Hero />}
         {view === "chatbot" && <Chatbot />}
         
       </div>
-      <Footer />
+      <Carrusel /> 
+
     </div>
   );
 }

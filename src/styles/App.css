@@ -72,3 +72,72 @@ html, body, #root { height: 100%; margin: 0; }
   /* opcional: si quieres efecto fijo */
   /* background-attachment: fixed; */
 }
+:root { --mc-purple: #5a2ea6; }
+.text-mc { color: var(--mc-purple) !important; }
+
+/* ===== Panel estilo “Hero”: blanco, sombra, grande ===== */
+.t-panel{
+  background: #fff;
+  border: 0;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(90,46,166,.15);
+  padding: clamp(1.25rem, 1vw + 1rem, 2rem);
+  text-align: center;
+  color: var(--mc-purple);
+}
+
+/* Badge superior (no se corta, ya no hay bordes que lo tapen) */
+.t-badge{
+  width: 72px; height: 72px;
+  margin: 0 auto 1rem;
+  border-radius: 18px;
+  display: flex;      
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #6b39c8, #4b1f8f);
+  box-shadow: 0 10px 30px rgba(90,46,166,.25);
+}
+.t-badge i, .t-badge svg{
+  color: #fff; fill: #fff;
+  font-size: 34px; 
+}
+
+.t-heading{
+  font-weight: 800;
+  color: var(--mc-purple);
+  font-size: clamp(1.15rem, 1.2vw + 1rem, 1.75rem);
+  margin: .25rem 0 .25rem;
+}
+.t-role{ font-weight: 700; }
+
+.t-body{
+  color: #3f2a84;
+  opacity: 0.95;
+  line-height: 1.8;
+  font-size: clamp(1rem, .9vw + .85rem, 1.125rem);
+  max-width: 980px;
+  margin: 0.25rem auto 0;
+}
+
+/* Carousel look */
+.tcar .carousel-indicators [data-bs-target]{
+  width: 5px; height: px;
+  background-color: rgba(90,46,166,.35);
+}
+.tcar .carousel-indicators .active{ background-color: var(--mc-purple); }
+
+.tcar .carousel-control-prev-icon,
+.tcar .carousel-control-next-icon{
+  width: 2.4rem; height: 2.4rem;
+  filter: invert(22%) sepia(66%) saturate(7481%) hue-rotate(246deg) brightness(88%) contrast(99%);
+}
+
+/* Espaciado vertical por slide (sin tocar display de .carousel-item) */
+.tcar .row{ padding-block: 1.25rem; }
+
+/* Responsive */
+@media (max-width: 576px){
+  .t-badge{ width: 64px; height: 64px; }
+  .t-badge i, .t-badge svg{ font-size: 28px; }
+}
+

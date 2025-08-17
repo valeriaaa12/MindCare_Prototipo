@@ -25,15 +25,15 @@ export default function Navbar({ current }: Props) {
             </li>
 
             <li className=  "nav-item">
-              {/* IMPORTANTE: ruta con hash, no a un archivo */}
+              
               <a className={`nav-link${current === "chatbot" ? " active" : ""}`} href="#chatbot">
                 Mindy
               </a>
             </li>
 
             <li className="nav-item"><a className="nav-link" href="#">Agenda una cita</a></li>
-            <li className="nav-item me-lg-3"><a className="nav-link" href="#">Sobre Nosotros</a></li>
-
+            <li className="nav-item me-lg-3"><a className="nav-link" href="#">Recursos</a></li>
+             <li className="nav-item me-lg-3"><a className="nav-link" href="#">Sobre Nosotros</a></li>
             <li className="nav-item d-flex align-items-center justify-content-center">
               <span className="avatar-circle d-flex align-items-center justify-content-center" title="Profile"
                     style={{ width: 36, height: 36, background: "transparent" }}>

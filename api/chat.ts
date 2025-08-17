@@ -5,68 +5,110 @@ export const config = { runtime: "nodejs" };
 
 type Msg = { role: "user" | "assistant"; content: string };
 
+// Convierte tus mensajes (user/assistant) al formato de Gemini (user/model)
+function toGeminiContents(messages: Msg[] = []) {
+  return messages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: String(m.content ?? "") }],
+  }));
+}
+
+// Garantiza que el primer content para Gemini sea 'user'.
+// Si la conversación comienza con un saludo del assistant, lo omite.
+function normalizeStartingWithUser(messages: Msg[]) {
+  if (!messages?.length) return [];
+  const firstUserIdx = messages.findIndex((m) => m.role === "user");
+  return firstUserIdx >= 0 ? messages.slice(firstUserIdx) : []; // si no hay user, devuelvo vacío
+}
+
 export default async function handler(req: any, res: any) {
-  // CORS básico (útil si pruebas desde otros orígenes)
+  // CORS básico (útil si alguna vez pruebas cross-origin)
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") return res.status(204).end();
-  if (req.method !== "POST") return res.status(405).json({ ok: false, error: "Method Not Allowed" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ ok: false, error: "Method Not Allowed" });
+  }
 
   try {
-    // Parseo tolerante de body (string o objeto)
+    // Body tolerante (string u objeto)
     const raw = req.body;
     const body = typeof raw === "string" ? JSON.parse(raw || "{}") : (raw || {});
+    const messages = (Array.isArray(body?.messages) ? body.messages : []) as Msg[];
 
-    // --- Entrada: messages o prompt ---
-    const messages: Msg[] = Array.isArray(body?.messages) ? body.messages : [];
+    // Instrucción inicial (actúa como “sistema” pero Gemini no tiene rol system, así que va como user)
+    const systemInstruction = {
+      role: "user" as const,
+      parts: [
+        {
+          text:
+            "Eres Mindy, una asistente emocional empática. Responde SIEMPRE en español, de forma breve, clara y con apoyo emocional. " +
+            "Prioriza validar emociones, hacer preguntas suaves y sugerir pasos simples (respiración, journaling, hablar con alguien de confianza). " +
+            "Evita juicios, consejos médicos y contenido clínico; si detectas riesgo, sugiere buscar ayuda profesional y líneas de apoyo locales.",
+        },
+      ],
+    };
+
+    // Asegura que el historial empiece con el primer mensaje del usuario
+    const usableHistory = normalizeStartingWithUser(messages);
+
+    // Construye el array de contenidos para Gemini: instrucción + historial alternando user/model
+    const contents = [
+      systemInstruction,
+      ...toGeminiContents(usableHistory),
+    ];
+
+    // Si no hay ningún mensaje de usuario, responde amigable sin llamar a Gemini
     const last = messages[messages.length - 1];
-    let prompt: string =
-      (last?.role === "user" ? String(last.content ?? "") : "") ||
-      (typeof body?.prompt === "string" ? body.prompt : "");
-
-    // Construir history PARA GEMINI: debe iniciar con 'user'
-    // 1) Tomamos todos los mensajes antes del último (que es el input actual del user)
-    const prior = messages.slice(0, -1);
-
-    // 2) Buscamos el primer 'user' y empezamos el historial DESDE ahí (ignoramos saludos del assistant al inicio)
-    const firstUserIdx = prior.findIndex((m) => m.role === "user");
-    const priorFromFirstUser = firstUserIdx >= 0 ? prior.slice(firstUserIdx) : [];
-
-    // 3) Mapear a roles de Gemini ('user' | 'model')
-    const history = priorFromFirstUser.map((m) => ({
-      role: m.role === "assistant" ? "model" : "user",
-      parts: [{ text: String(m.content ?? "") }],
-    }));
-
-    // Si no hay prompt (usuario no escribió nada), devolvemos 200 con aviso
-    if (!prompt) {
+    const lastText = last?.role === "user" ? String(last.content ?? "") : "";
+    if (!lastText) {
       return res.status(200).json({
         ok: true,
         reply:
-          "⚠️ No recibí texto del usuario. Envía { messages:[...{role:'user',content:'...'}] } o { prompt:'...' } con 'Content-Type: application/json'.",
+          "¡Hola! Puedo escucharte. Cuéntame, ¿cómo te sientes hoy? 💙",
       });
     }
 
-    // Key
     if (!process.env.GEMINI_API_KEY) {
+      // Fallback amable si falta la key en runtime
       return res.status(200).json({
         ok: true,
-        reply: `Echo (sin GEMINI_API_KEY): ${prompt.slice(0, 120)}`,
+        reply:
+          "Ahora mismo no puedo conectarme, pero estoy aquí para escucharte. ¿Qué te gustaría contarme?",
       });
     }
 
     // --- Llamada a Gemini ---
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const chat = model.startChat({ history });
-    const result = await chat.sendMessage(prompt);
-    const reply = result.response.text();
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash", // puedes cambiar a "gemini-2.0-pro" si buscas mayor profundidad
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.9,
+        topK: 40,
+        maxOutputTokens: 512,
+      },
+      // safetySettings: [...] // opcional
+    });
 
-    return res.status(200).json({ ok: true, reply: reply || "…" });
-  } catch (e: any) {
-    console.error("api/chat error:", e);
-    // Evitamos 500 duros mientras depuras: te damos respuesta de cortesía
-    return res.status(200).json({ ok: true, reply: "🤖 No pude responder ahora, intenta de nuevo en un momento." });
+    // Con generateContent puedes pasar todo el contenido (instrucción + historial + último user)
+    const response = await model.generateContent({ contents });
+
+    // Texto de respuesta (SDK trae response.text())
+    const reply =
+      (response as any)?.response?.text?.() ??
+      (response as any)?.text?.() ??
+      "Gracias por compartir. Estoy contigo. 💜";
+
+    return res.status(200).json({ ok: true, reply });
+  } catch (err: any) {
+    console.error("api/chat error:", err);
+    // Respuesta empática de cortesía si algo falla
+    return res.status(200).json({
+      ok: true,
+      reply:
+        "Perdón, tuve un problema técnico. Aun así estoy aquí para ti. ¿Quieres contarme un poco más de cómo te sientes?",
+    });
   }
 }

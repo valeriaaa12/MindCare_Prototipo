@@ -1,44 +1,44 @@
 // api/chat.ts
-export const config = { runtime: "nodejs" };
-
-
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-type Msg = { role: 'user' | 'assistant' | 'system'; content: string };
-
-function toGeminiContents(messages: Msg[] = []) {
-  return messages.map(m => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: m.content ?? '' }],
-  }));
-}
+export const config = { runtime: 'nodejs' }; // válido en Vercel
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // CORS básico (por si haces pruebas locales con otra origin)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') return res.status(204).end();
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ ok: false, error: 'Method Not Allowed' });
+  }
+
   try {
-    if (req.method === 'GET') return res.status(200).send('ok');
-    if (req.method !== 'POST') { res.setHeader('Allow', 'POST, GET'); return res.status(405).send('Method Not Allowed'); }
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error('Missing GEMINI_API_KEY (configúrala en Vercel → Project → Environment Variables → Build & Runtime).');
+    }
 
-    const key = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-    if (!key) return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
+    // Vercel puede darte body como string si no mandas el header correcto
+    const rawBody = (req as any).body;
+    const body = typeof rawBody === 'string' ? JSON.parse(rawBody || '{}') : (rawBody || {});
+    const prompt: string = body?.prompt ?? '';
 
-    const ai = new GoogleGenAI({ apiKey: key });
+    if (!prompt) {
+      return res.status(400).json({ ok: false, error: 'Missing "prompt" in request body' });
+    }
 
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-    const messages: Msg[] = Array.isArray(body.messages) ? body.messages : [];
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    const system = { role: 'user', parts: [{ text: 'Eres Mindy, una asistente emocional empática. Responde en español, breve y clara.' }] };
-    const contents = [system, ...toGeminiContents(messages)];
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
 
-    const response = await ai.models.generateContent({ model: 'gemini-1.5-flash', contents });
-    const reply =
-      (response as any)?.text ||
-      (response as any)?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      'Lo siento, no tengo respuesta ahora.';
-
-    return res.status(200).json({ reply });
+    return res.status(200).json({ ok: true, text });
   } catch (err: any) {
-    console.error('Gemini function error:', err?.stack || err?.message || String(err));
-    return res.status(500).json({ error: 'Function error' });
+    // Importante para ver el error en los logs de Vercel
+    console.error('API /api/chat error:', err);
+    return res.status(500).json({ ok: false, error: err?.message || 'Internal Server Error' });
   }
 }

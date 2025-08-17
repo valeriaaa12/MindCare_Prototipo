@@ -15,11 +15,7 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-/**
- * Convierte messages [{role:'user'|'assistant', content:string}]
- * al formato "contents" que espera Gemini:
- * [{ role:'user'|'model', parts: [{ text }]}]
- */
+
 function toGeminiContents(messages = []) {
   return messages.map((m) => ({
     role: m.role === "assistant" ? "model" : "user",

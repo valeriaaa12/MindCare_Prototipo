@@ -1,4 +1,3 @@
-
 import FeatureCard from "./FeatureCard";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 

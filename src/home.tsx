@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-
+import Cita from "./cita";
 import Hero from "./components/Hero";
 import Chatbot from "./Chatbot";      // <- está en src/Chatbot.tsx
 
 import Carrusel from "./components/carrusel";
-type View = "home" | "chatbot";
+type View = "home" | "chatbot" | "cita";
 
 function getViewFromHash(): View {
   const h = window.location.hash.replace("#", "");
-  return h === "chatbot" ? "chatbot" : "home";
+  if (h === "chatbot") return "chatbot";
+  if (h === "cita") return "cita";
+  return "home";
 }
 
 export default function App() {
@@ -26,7 +28,7 @@ export default function App() {
       <div className="app-main">
         {view === "home" && <Hero />}
         {view === "chatbot" && <Chatbot />}
-        
+        {view === "cita" && <Cita />}
       </div>
       <Carrusel /> 
 

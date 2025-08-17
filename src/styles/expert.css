@@ -1,0 +1,54 @@
+:root { --mc-purple: #5a2ea6; }
+.text-mc { color: var(--mc-purple) !important; }
+
+/* Sección con fondo suave */
+.experts-section{
+  background: #f8f6fc; /* parecido a tu mockup */
+}
+
+/* Tarjeta grande con sombra y esquinas redondeadas */
+.expert-card{
+  position: relative;
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 20px 50px rgba(90,46,166,.12);
+}
+
+/* Avatar circular morado */
+.doc-avatar{
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: var(--mc-purple);
+  display: grid; place-items: center;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+.doc-avatar img{ width: 100%; height: 100%; object-fit: cover; }
+.doc-initial{ color:#fff; font-weight: 800; font-size: 44px; }
+
+/* Textos */
+.doc-name{
+  color: var(--mc-purple);
+  font-weight: 800;
+  font-size: clamp(1.25rem, 1.1vw + 1rem, 1.75rem);
+  margin: 0;
+}
+.doc-meta{ color:#6b5aa6; }
+.doc-spec{ font-weight: 600; }
+
+/* Botón morado */
+.btn-mc{
+  background: var(--mc-purple);
+  border: none;
+  color: #fff;
+}
+.btn-mc:hover{ background: #4b1f8f; color: #fff; }
+
+/* Modal look */
+.modal-mc .modal-content{ border-radius: 18px; }
+.modal-mc .btn-close{ filter: invert(20%); }
+
+/* Responsive: avatar más pequeño en móviles */
+@media (max-width: 576px){
+  .doc-avatar{ width: 96px; height: 96px; }
+}

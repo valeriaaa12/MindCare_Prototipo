@@ -8,6 +8,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 // Estilos propios
 import "./styles/App.css";
+import './styles/expert.css';
 
 import App from "./App";
 

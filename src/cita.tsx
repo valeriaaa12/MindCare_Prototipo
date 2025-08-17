@@ -107,13 +107,7 @@ export function AgendaModal({
   };
 
   if (!experto) return null;
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
-        event.preventDefault();
-        const fd = new FormData(event.currentTarget);
-        alert(`✅ Cita con ${experto?.nombre}\nFecha: ${fd.get("fecha")}\nHora: ${fd.get("hora")}`);
-        onClose();
-    }
-
+    
    return (
     <Portal>
       {/* MODAL */}

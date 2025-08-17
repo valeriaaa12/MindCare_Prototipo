@@ -5,11 +5,15 @@ import Chatbot from "./Chatbot";
 import Footer from "./components/Footer";
 import Cita from "./cita";
 import Home from "./home";
-type View = "home" | "chatbot" | "cita";
+import UpgradePlans from "./plans";
+import Recursos from "./recursos";
+type View = "home" | "chatbot" | "cita" | "planes" | "recursos";
 function getViewFromHash(): View {
   const h = window.location.hash.replace("#", "");
   if (h === "chatbot") return "chatbot";
   if (h === "cita") return "cita";
+  if (h === "planes") return "planes";
+  if (h === "recursos") return "recursos";
   return "home";
 }
 
@@ -29,6 +33,8 @@ export default function App() {
         {view === "home" && <Home />}
         {view === "chatbot" && <Chatbot />}
         {view === "cita" && <Cita />}
+        {view === "planes" && <UpgradePlans />}
+        {view === "recursos" && <Recursos />}
       </div>
       <Footer />
     </div>

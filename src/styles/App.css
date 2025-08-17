@@ -141,3 +141,60 @@ html, body, #root { height: 100%; margin: 0; }
   .t-badge i, .t-badge svg{ font-size: 28px; }
 }
 
+:root { --mc-purple: #5a2ea6; }
+.text-mc { color: var(--mc-purple) !important; }
+.btn-mc { background: var(--mc-purple); color:#fff; border:none; }
+.btn-mc:hover { background:#4b1f8f; color:#fff; }
+
+/* ===== Pricing cards ===== */
+.pricing-card{
+  background: #572ca3; /* morado sólido */
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 14px 38px rgba(90,46,166,.2);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;  /* botón al fondo */
+  gap: 0.75rem;
+  position: relative;
+}
+.pricing-card.is-popular{
+  outline: 3px solid rgba(255,255,255,.25);
+  box-shadow: 0 18px 50px rgba(90,46,166,.28);
+}
+
+.pricing-title{
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.pricing-list{
+  list-style: none;
+  padding-left: 0;
+  margin: .5rem 0 0;
+  font-size: .95rem;
+  line-height: 1.7;
+}
+.pricing-list li{
+  margin: .35rem 0;
+}
+
+/* “Más popular” */
+.ribbon-popular{
+  position: absolute;
+  top: -12px; right: 16px;
+  background: #ffdb5e;
+  color: #4b1f8f;
+  font-weight: 700;
+  font-size: .8rem;
+  padding: .25rem .5rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.15);
+}
+
+/* Responsive: aire entre cards y mejor lectura en mobile */
+@media (max-width: 576px){
+  .pricing-card{ padding: 1.25rem; }
+  .pricing-title{ font-size: 1.15rem; }
+}

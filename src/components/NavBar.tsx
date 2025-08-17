@@ -1,4 +1,4 @@
-type Props = { current: "home" | "chatbot" | "cita" };
+type Props = { current: "home" | "chatbot" | "cita" | "planes" | "recursos" };
 
 export default function Navbar({ current }: Props) {
   return (
@@ -36,8 +36,17 @@ export default function Navbar({ current }: Props) {
                 Agenda una cita
               </a>
             </li>
-            <li className="nav-item me-lg-3"><a className="nav-link" href="#">Recursos</a></li>
-             <li className="nav-item me-lg-3"><a className="nav-link" href="#">Nuestros Planes</a></li>
+             <li className="nav-item">
+              <a className={`nav-link${current === "recursos" ? " active" : ""}`} href="#recursos">
+                Recursos
+              </a>
+            </li>
+             <li className="nav-item">
+              <a className={`nav-link${current === "planes" ? " active" : ""}`} href="#planes">
+                Nuestros Planes
+              </a>
+            </li>
+    
             <li className="nav-item d-flex align-items-center justify-content-center">
               <span className="avatar-circle d-flex align-items-center justify-content-center" title="Profile"
                     style={{ width: 36, height: 36, background: "transparent" }}>

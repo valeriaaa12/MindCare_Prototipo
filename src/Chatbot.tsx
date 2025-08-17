@@ -37,10 +37,10 @@ export default function ChatBot() {
     const payload = [...messages, userMsg].map(m => ({ role: m.role, content: m.content }));
 
     const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: payload }),
-    });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ messages: payload }), // incluye el userMsg!
+});
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 

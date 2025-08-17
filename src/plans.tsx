@@ -12,6 +12,7 @@ function ConfirmModal({
   onConfirm: () => void;
   onClose: () => void;
 }) {
+  
   const el = useMemo(() => document.createElement("div"), []);
   useEffect(() => {
     document.body.appendChild(el);

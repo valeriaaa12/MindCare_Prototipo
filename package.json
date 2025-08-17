@@ -11,7 +11,7 @@
     "dev:server": "node server/index.js"
   },
   "dependencies": {
-    "@google/genai": "^x.y.z",
+    "@google/genai": "^1.14.0",
     "@vercel/node": "^5.3.13",
     "bootstrap": "^5.3.7",
     "bootstrap-icons": "^1.13.1",

@@ -1,5 +1,6 @@
 // api/chat.ts
-export const config = { runtime: 'nodejs20.x' };
+export const config = { runtime: "nodejs" };
+
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from '@google/genai';

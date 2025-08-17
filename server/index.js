@@ -45,7 +45,7 @@ app.post("/api/chat", async (req, res) => {
     const contents = [systemInstruction, ...toGeminiContents(messages)];
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash", // rápido y económico; usa 2.0-pro si quieres más calidad
+      model: "gemini-1.5-flash", // rápido y económico; usa 2.0-pro si quieres más calidad
       contents,
       // generationConfig: { temperature: 0.7 }, // opcional
       // safetySettings: [...]                   // opcional

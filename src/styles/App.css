@@ -2,8 +2,18 @@
   --mc-purple: #5a2ea6;
   --mc-soft-bg:#f7f5fb;
 }
+.text-mindcare {
+  color: #5a2ea6 !important;
+}
 
-html, body, #root { height: 100%; }
+
+html, body, #root {
+  height: 100%;          /* que ocupen todo el alto */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
 .bg-soft { background: var(--mc-soft-bg); min-height: 100%; }
 
 /* Navbar */
@@ -39,4 +49,5 @@ html, body, #root { height: 100%; }
 footer{ border-top:1px solid #5a2ea6;background-color: #5a2ea6 }
 footer {
   color: #fff;
+  margin-bottom: auto;
 }
